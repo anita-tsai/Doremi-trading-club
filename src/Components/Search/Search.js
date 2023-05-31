@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
 
 import SearchBar from '../SearchBar';
 import LabelBar from '../LabelBar';
 import TagsBar from '../TagsBar';
-import Chip from '@material-ui/core/Chip';
-
 
 const Title = styled.p`
   text-align: center;
@@ -20,11 +19,9 @@ const TagWrapper = styled.div`
 
 const Search = ({ setCategory, category, content, setContent, tags, setTags }) => {
   const rooms = useSelector(state => state.rooms)
-  console.log('kkkk', rooms)
 
   const [tag1, setTag1] = useState(null)
   const [tag2, setTag2] = useState(null)
-  // const [tags, setTags] = useState([])
 
   const onTagUpdate1 = (option1) => {
     setTag1(option1)
@@ -38,10 +35,9 @@ const Search = ({ setCategory, category, content, setContent, tags, setTags }) =
     <div>
       <Title>
         在線房間：{rooms.length}
-        {/* {results.data.length} */}
       </Title>
       <SearchBar content={content} setContent={setContent} />
-      <LabelBar setCategory={setCategory} category={category}/>
+      <LabelBar category={category} setCategory={setCategory} />
       <TagsBar onChange1={onTagUpdate1} onChange2={onTagUpdate2}/>
       <Button
         variant="contained"

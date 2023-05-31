@@ -3,7 +3,7 @@ import Room from '../Room/Room';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-//import { Category } from '@material-ui/icons';
+
 
 
 
@@ -30,13 +30,13 @@ const Lobby = ({ category, content, tags }) => {
     clearInterval(intervalTimer)
     const fn = async () => {
       const results = await axios.get('http://localhost:4000/rooms', {
+        // search the room by category, content, tags
         params: {
           category,
           content,
           tags: JSON.stringify(tags)
         }
       });
-      // setRooms(results.data);
       dispatch({ type: 'SET_ROOMS', payload: results.data })
     }
     fn();

@@ -13,7 +13,6 @@ import Collapse from '@material-ui/core/Collapse';
 import CardActions from '@material-ui/core/CardActions';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import IconButton from '@material-ui/core/IconButton';
@@ -207,7 +206,6 @@ const RoomPage = ({ match }) => {
   const [on, setOn] = React.useState(false)
   const inputEl = useRef(null);
   const messagesRef = useRef(null)
-  // const [anchorEl, setAnchorEl] = React.useState(null);
   const [alter, setAlter] = React.useState(false);
 
 
@@ -300,16 +298,12 @@ const RoomPage = ({ match }) => {
   useEffect(() => {
     getRoomData();
     fetchDialogs();
-    // setInterval(fetchDialogs, 5000);
   }, [])
 
   
 
   // api: to type dialogs
   const createText = async () => {
-    console.log('data', data)
-    console.log('token', token)
-
     if (contents.trim().length === 0) {
       return
     } else {
@@ -339,7 +333,7 @@ const RoomPage = ({ match }) => {
 
 
   // to copy the room's url
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     open: false,
     Transition: Fade,
   });
@@ -373,9 +367,6 @@ const RoomPage = ({ match }) => {
     )
     getRoomData();
 
-    // handleClose();
-    // fn();
-
   }
 
 
@@ -390,17 +381,7 @@ const RoomPage = ({ match }) => {
     scrollToBottom()
   }, [JSON.stringify(dialogs)]);
 
-  
-  // const handleClick = (event) => {
-  //   navigator.clipboard.writeText(window.location.href)
-  //   setAnchorEl(event.currentTarget);
-  // };
 
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const open = Boolean(anchorEl);
   const lines = content.split("\n")
   
   if (!data) {
@@ -437,15 +418,6 @@ const RoomPage = ({ match }) => {
               <FavoriteIcon
                 color={isLike ? 'secondary' : 'default'}
               />
-              {/* { icons.map((icon) => {
-                console.log(likeIcon)
-                return <FavoriteIcon
-                  color={likeIcon === icon ? 'primary' : 'default'}
-                  onClick={() => {
-                    onLikeChange(likeIcon === icons ? undefined : icon)
-                  }}
-                >{icon}</FavoriteIcon>
-              })} */}
             </IconButton>
             <IconButton aria-label="share" fontSize="large">
               <ShareIcon onClick={handleClick(Fade)}/>
@@ -464,17 +436,11 @@ const RoomPage = ({ match }) => {
                 </Button>
               </ButtonWrapper>
               <Dialog
-                // fullScreen={fullScreen}
                 open={on}
                 onClose={handleClickClose}
                 aria-labelledby="responsive-dialog-title"
               >
                 <DialogTitle id="responsive-dialog-title">{"確認是否刪除此房間"}</DialogTitle>
-                <DialogContent>
-                  {/* <DialogContentText>
-                    按下確認鍵，視為同意刪除該房間
-                  </DialogContentText> */}
-                </DialogContent>
                 <DialogActions>
                   <Button autoFocus onClick={handleClickClose} color="primary">
                     取消
@@ -513,36 +479,14 @@ const RoomPage = ({ match }) => {
       </Card>
 
       <ShareWrapper>
-      <Snackbar
-        open={state.open}
-        onClose={handleClose}
-        TransitionComponent={state.Transition}
-        message="已成功複製網址"
-        key={state.Transition.name}
-        autoHideDuration={1000}
-      />
-      {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        scroll={'paper'}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >
-        <DialogTitle 
-          id="scroll-dialog-title"
-        >
-          已成功複製網址
-        </DialogTitle>
-        <DialogContent></DialogContent>
-        <DialogActions>
-          <Button  variant="contained" color="success">
-            Line
-          </Button>
-          <Button  variant="contained" color="primary">
-            Facebook
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+        <Snackbar
+          open={state.open}
+          onClose={handleClose}
+          TransitionComponent={state.Transition}
+          message="已成功複製網址"
+          key={state.Transition.name}
+          autoHideDuration={1000}
+        />
       </ShareWrapper>
       
       

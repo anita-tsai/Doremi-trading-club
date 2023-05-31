@@ -1,20 +1,18 @@
 import React from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import {  } from '../../actions';
 import styled from 'styled-components';
+
 import _Button from '@material-ui/core/Button';
 import _Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
 import GoogleLogin from 'react-google-login';
-// import FacebookLogin from 'react-facebook-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-
-import axios from 'axios';
-
-import { useDispatch } from 'react-redux';
-import {  } from '../../actions';
-
 
 import {
   // BrowserRouter as Router,
@@ -28,8 +26,6 @@ import {
 
 
 const baseURL = "http://localhost:4000";
-
-
 
 const Wrapper = styled.div`
   display: flex;
@@ -79,6 +75,7 @@ const Signin = () => {
     console.log('results.data', results.data)
     dispatch(({ type: 'SET_USER_LOGIN', login: true, token: results.data.token, name: results.data.name }))
     
+    // back to page before login
     let { from } = location.state || { from: { pathname: "/" } };
     history.replace(from);
   };
@@ -100,9 +97,6 @@ const Signin = () => {
   };
 
   return(
-
-
-
     <Wrapper>
       <Card>
         <CardContent>
@@ -141,7 +135,7 @@ const Signin = () => {
         <Typography>
         <FacebookLogin
           appId="1186471925483905"
-          autoLoad={true}
+          // autoLoad={true}
           fields="name,email,picture"
           //onClick={componentClicked}
           callback={responseFacebook} 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import moment from 'moment';
-
+import { Link } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -13,8 +13,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import _ButtonBase from '@material-ui/core/ButtonBase';
 import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-
 
 
 const Wrapper = styled.div`
@@ -72,20 +70,15 @@ const UserPage = () => {
   // api
   const [rooms, setRooms] = useState([])
   const [profile, setProfile] = useState([])
-  // const rooms = useSelector(state => state.rooms)
-  // const dispatch = useDispatch()
-  console.log('rooms', rooms)
   
-
   // to get name/token from redux
   const { token } = useSelector(state => {
-    console.log(state)
     return {
       token: state.userLogin.token
     }  
   })
-  console.log('tttt', token)
 
+  // when render this component
   useEffect(() => {
     const fn = async () => {
       const results = await axios.get(
@@ -96,11 +89,8 @@ const UserPage = () => {
           }
         }
       );
-      console.log('11', results.data)
       setRooms(results.data.rooms);
       setProfile(results.data.profile);
-      // dispatch({ type: 'SET_ROOMS', payload: results.data })
-      console.log('results.data user', results.data)
     }
     fn();
     setInterval(fn, 30000);
@@ -136,8 +126,6 @@ const UserPage = () => {
       
       {
         rooms.map(room => {
-          console.log('room', room)
-          console.log('room.id', room.id)
           return (
             <OwnerWrapper>
               <Paper>
@@ -169,9 +157,9 @@ const UserPage = () => {
                     </Grid>
                     <Grid item>
                       <CateWrapper>
-                      <Typography variant="h5" color="primary">
-                        {room.category_name}
-                      </Typography>
+                        <Typography variant="h5" color="primary">
+                          {room.category_name}
+                        </Typography>
                       </CateWrapper>
                     </Grid>
                   </Grid>

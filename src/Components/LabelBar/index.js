@@ -44,17 +44,6 @@ const LabelBar = ({ category, setCategory }) => {
           >{c}</Button>
         })}
       </ButtonGroup>
-        {/* <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-          <Button>交換</Button>
-          <Button>出售</Button>
-          <Button>徵求</Button>
-          <Button variant="contained" color="primary">
-            聊天
-          </Button>
-          <Button variant="contained" color="secondary">
-            競標
-          </Button>
-        </ButtonGroup> */}
     </Label>
   )
 }

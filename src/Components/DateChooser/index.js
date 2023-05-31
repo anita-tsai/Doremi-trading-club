@@ -12,12 +12,11 @@ const DatePicker = styled(_DatePicker)`
 `
 
 
-const DateChooser = () => {
-  const [startDate, setStartDate] = useState(new Date());
+const DateChooser = ({ onChange, eventTime }) => {
   return (
     <DatePicker 
-      selected={startDate} 
-      onChange={(date) => setStartDate(date)} 
+      selected={eventTime} 
+      onChange={onChange} 
       isClearable={true}
       dateFormat="yyyy/MM/dd"
     />

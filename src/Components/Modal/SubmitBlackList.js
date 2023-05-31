@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import ImageUploader from "react-images-upload";
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -13,10 +14,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import _TextField from '@material-ui/core/TextField';
 import UserBar from '../UserBar';
+
 import DateChooser from '../DateChooser';
-
-
-import ImageUploader from "react-images-upload";
 import './picture.css'; 
 
 const TextField = styled(_TextField)`
@@ -52,7 +51,8 @@ const ImgWrapper = styled.div`
 
 const SubmitBlackList = (props) => { 
   const { 
-    handleClose 
+    handleClose,
+    onSubmit,
   }=props
   
   const [users, setUsers] = useState([])
@@ -65,13 +65,12 @@ const SubmitBlackList = (props) => {
   }
 
   const [titles, setTitles] = useState(null)
-  const [eventTime, setEventTime] = useState(null)
+  const [eventTime, setEventTime] = useState(new Date())
   const [reasons, setReasons] = useState(null)
   const [notes, setNotes] = useState(null)
   const [reportedUser, setReported_user] = useState(null)
   const [pictures, setPictures] = useState([]);
 
-  console.log('pic',pictures)
   const onDrop = pictureList => {
     setPictures([...pictures, ...pictureList]);
   };
@@ -104,9 +103,6 @@ const SubmitBlackList = (props) => {
 
   // to get name/token from redux
   const { username, token } = useSelector(state => {
-    console.log('state', state)
-    console.log('state.userLogin', state.userLogin.name)
-    console.log('state.login', state.userLogin.login)
     return {
       username: state.userLogin.name,
       token: state.userLogin.token
@@ -134,14 +130,14 @@ const SubmitBlackList = (props) => {
     console.log('token', token)
     const response = await axios
       .post(
-        `$http://localhost:4000/submitblacklist`,
+        `http://localhost:4000/submitblacklist`,
         {
           "user_id": '',
           "title": titles,
           "event_time": eventTime,
           "reason": reasons,
           "note": notes,
-          "name": reportedUser.value,
+          "reported_user_id": reportedUser.value,
           "images": results.map((img) => {
             return img.dataURL
             
@@ -153,17 +149,15 @@ const SubmitBlackList = (props) => {
           }
         }
     )
-    console.log(response)
     
     handleClose();
-    fn();
-    
-    // setPictures([...pictures, ...results]);
-    // console.log(results.map(d => d.dataURL));
+    onSubmit();
   };
 
   
-  
+  useEffect(() => {
+    fn();
+  }, [])
   
 
   return(
@@ -181,20 +175,6 @@ const SubmitBlackList = (props) => {
           檢舉黑名單
         </DialogTitle>
         <DialogContent dividers={true}>
-        {/* <Subtitle>房間類別</Subtitle>
-          <ButtonGroup 
-            size="large" 
-            variant="contained" 
-            color="default" 
-            aria-label="contained primary button group"
-          >
-            { categories.map((c) => {
-              return <Button
-                color={category === c ? 'primary' : 'default'}
-                onClick={() => onCategoryChange(c)}
-              >{c}</Button>
-            })}
-          </ButtonGroup> */}
           <Subtitle>房間規範</Subtitle>
           <Card variant="outlined">
             <CardContent>
@@ -210,17 +190,15 @@ const SubmitBlackList = (props) => {
             </CardContent>
           </Card>
           <Subtitle>檢舉對象：可下拉選單亦可輸入進行搜尋</Subtitle>
-            <UserBar onChange={onReportedChange}></UserBar>
+            <UserBar onChange={onReportedChange} data={users}></UserBar>
           <Subtitle>發生日期：若有先後順序可於下方事件經過詳述</Subtitle>
-            <DateChooser onChange={onEventTimeChange}></DateChooser>
+            <DateChooser onChange={onEventTimeChange} eventTime={eventTime}></DateChooser>
           <TextWrapper> 
             <TextField
               id="standard-full-width"
               label="簡短敘述檢舉原因"
               style={{ margin: 8 }}
               onChange={onTitleChange}
-              // placeholder="Placeholder"
-              // helperText="Full width!"
               fullWidth
               size='medium'
               margin="normal"
@@ -241,10 +219,6 @@ const SubmitBlackList = (props) => {
                 maxFileSize={5242880}
                 label=""
               />
-              
-              {/* { pictures.map((p) => {
-                  return <img src={p.dataURL} />
-              })} */}
             </ImgWrapper>
           <Subtitle>詳述事件經過</Subtitle>
             <TextField

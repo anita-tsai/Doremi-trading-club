@@ -55,7 +55,7 @@ const RoleOptions = [
   }
 ]
 
-const UserBar = ({ onChange }) => {
+const UserBar = ({ onChange, data }) => {
 
   return (
     <Fragment>
@@ -68,7 +68,10 @@ const UserBar = ({ onChange }) => {
         isClearable={true}
         isSearchable={true}
         name="color"
-        options={RoleOptions}
+        options={data.map(d => ({
+          value: d.id,
+          label: d.name,
+        }))}
         noOptionsMessage={() => '查無此名稱'}
       />
     </Fragment>

@@ -3,11 +3,13 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
+import ImageUploader from "react-images-upload";
 
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,9 +19,6 @@ import TextField from '@material-ui/core/TextField';
 
 
 import TagsBar from '../TagsBar';
-import Chip from '@material-ui/core/Chip';
-
-import ImageUploader from "react-images-upload";
 import './picture.css'; 
 
 const Text = styled(Typography)`
@@ -44,7 +43,6 @@ const TagWrapper = styled.div`
 `
 
 const ImgWrapper = styled.div`
-  
   *{
     width: 375px;
   }
@@ -69,23 +67,14 @@ const categoryMap = {
 const UpdateRoom = (props) => { 
   const { 
     handleClose,
-    data,
+    data,  // from RoomPage -> setData: call getRoomById
   }=props
   
-  console.log('data', data)
-  const dispatch = useDispatch()
-  const fn = async () => {
-    const results = await axios.get('http://localhost:4000/rooms');
-    // setRooms(results.data);
-    dispatch({ type: 'SET_ROOMS', payload: results.data })
-    console.log('results.data', results.data)
-  }
-
+  let history = useHistory()
 
   const [tag1, setTag1] = useState(null)
   const [tag2, setTag2] = useState(null)
   const [tags, setTags] = useState(data.tags)
-  // const baseURL = "http://localhost:4000/room";
   const [titles, setTitles] = useState(data.title)
   const [contents, setContents] = useState(data.content)
 
@@ -101,15 +90,18 @@ const UpdateRoom = (props) => {
   const [pictures, setPictures] = useState([]);
   const [base64Pictures, setBase64Pictures] = useState([]);
 
-  let history = useHistory();
-
+  
   const onDrop = pictureList => {
-    if (pictureList.length < pictures.length) {
-      console.log(pictureList)
+    // todo: enhance check if delete or not
+
+    if(pictureList.length < pictures.length) {
+      // delete case
       setPictures(pictureList)
     } else {
+      // add case
       setPictures([...pictures, ...pictureList]);
     }
+    
   };
 
   // type contents
@@ -122,22 +114,17 @@ const UpdateRoom = (props) => {
     setTitles(event.target.value)
   }
 
-
-
   // to get name/token from redux
   const { username, token } = useSelector(state => {
-    console.log('state', state)
-    console.log('state.userLogin', state.userLogin.name)
-    console.log('state.login', state.userLogin.login)
     return {
       username: state.userLogin.name,
       token: state.userLogin.token
     }
-    
   })
 
   
   useEffect(() => {
+    // url -> file
     const createFile = async (url) => {
       let response = await fetch(url);
       let data = await response.blob();
@@ -159,6 +146,7 @@ const UpdateRoom = (props) => {
   }, [data.images])
 
   useEffect(() => {
+    // file -> base64
     const fn = async () => {
       const tasks = pictures.map((file) => {
         // transform file to image base64
@@ -198,41 +186,10 @@ const UpdateRoom = (props) => {
     history.push("/");
 
     handleClose();
-    fn();
 
   }
 
 
-  // const createRoom = async () => {        
-  //   // api
-  //   console.log('token', token)
-  //   const response = await axios
-  //     .post(
-  //       `${baseURL}`,
-  //       {
-  //         "user_id": '',
-  //         "title": titles,
-  //         "category": category,
-  //         "content": contents,
-  //         "tags": tags,
-  //         "images": base64Pictures
-  //       },
-  //       {
-  //         headers: {
-  //           "Authorization": 'Bearer ' + token
-  //         }
-  //       }
-  //   )
-  //   console.log(response)
-    
-  //   handleClose();
-  //   fn();
-    
-  //   // setPictures([...pictures, ...results]);
-  //   // console.log(results.map(d => d.dataURL));
-  // };
-
-  
   return(
       <Dialog
         keepMounted={false}
@@ -256,11 +213,14 @@ const UpdateRoom = (props) => {
             aria-label="contained primary button group"
           >
             { categories.map((c) => {
-              return <Button
+              return (
+              <Button
                 color={categoryMap[data.category_id] === c ? 'primary' : 'default'}
-                
-              >{c}</Button>
-            })}            
+              >
+                {c}
+              </Button>
+              )})
+            }            
           </ButtonGroup>
           <Subtitle>房間規範</Subtitle>
           <Card variant="outlined">
@@ -283,8 +243,6 @@ const UpdateRoom = (props) => {
               defaultValue={username}
               disabled={true}
               style={{ margin: 8 }}
-              // placeholder="Placeholder"
-              // helperText="Full width!"
               fullWidth
               margin="normal"
               InputLabelProps={{
@@ -299,8 +257,6 @@ const UpdateRoom = (props) => {
               value={titles}
               style={{ margin: 8 }}
               onChange={onTitleChange}
-              // placeholder="Placeholder"
-              // helperText="Full width!"
               fullWidth
               margin="normal"
               InputLabelProps={{
@@ -314,7 +270,6 @@ const UpdateRoom = (props) => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  console.log(tag1, tag2)
                   const tag = [tag1, tag2].reduce((cal, val) => {
                     if (val) {
                       return [...cal, val.label]
@@ -325,7 +280,9 @@ const UpdateRoom = (props) => {
                 
                   }
                 }
-              >產生標籤</Button>
+              >
+                產生標籤
+              </Button>
               
             </Tags>
             <TagWrapper>

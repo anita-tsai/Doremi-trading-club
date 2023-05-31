@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components'
+
 import _Card from '@material-ui/core/Card';
 import Collapse from '@material-ui/core/Collapse';
 import CardActions from '@material-ui/core/CardActions';
@@ -19,8 +20,7 @@ const Text = styled(Typography)`
 
 
 const Notice = () => {
-
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -46,18 +46,14 @@ const Notice = () => {
                 <li>登入後可開始創立房間，房間內每項都需填入後才可送出</li>
               </ul>
             </li>
-            {/* <li>如何開始互動：
-              <ul>
-                <li>登入後按加入房間就可以開始留言互動</li>
-                <li>留言無法刪除，請勿情緒化、攻擊性發言</li>
-              </ul>
-            </li> */}
+            
             <li>如何聯繫對方：
               <ul>
                 <li>若雙方需要交易等，建議直接在房內留下聯絡資訊</li>
                 <li>為保障雙方權益，建議於房內談妥條件再私訊對方</li>
               </ul>
             </li>
+
             <li>房間類型與標籤：
               <ul>
                 <li>類型：交換、出售、徵求、聊天、競標</li>
@@ -65,7 +61,6 @@ const Notice = () => {
                 <li>類型與標籤可方便大家辨認與搜尋有興趣的房間內容</li>
               </ul>
             </li>
-
           </ol>
         </Text>
         <Text>
@@ -125,11 +120,6 @@ const Notice = () => {
     </Card>
   );
 }
-
-
-
-
-
 
 
 export default Notice;

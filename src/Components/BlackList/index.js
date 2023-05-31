@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Link } from "react-router-dom";
 import styled from 'styled-components';
-import bannerImg from './banner1.png';
+import _ImageGallery from 'react-image-gallery';
+
 import _Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import _Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { Button } from '@material-ui/core';
-
-
 import _Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -19,23 +18,14 @@ import _TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-
-
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import IconButton from '@material-ui/core/IconButton';
-import _ImageGallery from 'react-image-gallery';
 
-import {
-  // BrowserRouter as Router,
-  // Switch,
-  // Route,
-  Link,
-  //useHistory,
-  //useLocation
-} from "react-router-dom";
 
 import SubmitBlackList from '../Modal/SubmitBlackList';
+import bannerImg from './banner1.png';
+
 
 const Wrapper = styled.div`
   background-color: #E8E7D2;
@@ -213,12 +203,13 @@ const BlackList = () => {
 
   const [rows, setRows] = useState([])
 
+  const fn = async () => {
+    const results = await axios.get('http://localhost:4000/blacklist');
+    setRows(results.data);
+    // dispatch({ type: 'SET_ROOMS', payload: results.data })
+  }
+
   useEffect(() => {
-    const fn = async () => {
-      const results = await axios.get('http://localhost:4000/blacklist');
-      setRows(results.data);
-      // dispatch({ type: 'SET_ROOMS', payload: results.data })
-    }
     fn();
   }, [])
 
@@ -278,11 +269,9 @@ const BlackList = () => {
           </Link>
          
           { login ?
-            <Link >
-              <Button variant="contained" color="secondary" onClick={handleClickOpen}>
-                舉報黑名單
-              </Button>
-            </Link>
+            <Button variant="contained" color="secondary" onClick={handleClickOpen}>
+              舉報黑名單
+            </Button>
           :
             <Link to ="/signin">
               <Button variant="contained" color="secondary" onClick={handleClickOpen}>
@@ -291,18 +280,13 @@ const BlackList = () => {
             </Link>
           }
         </ButtonWrapper>
-          
-            
-        
-        
-        
       </Wrapper>
       
       <Line/>
+
       <CardWrapper>
         <Card variant="outlined">
         <CardContent>
-
           <Text variant="h5" component="h2">
             本平台為無償供喜愛小魔女的粉絲使用，請大家盡量和平相處
           </Text>
@@ -332,60 +316,56 @@ const BlackList = () => {
           <Text>
             作者信箱： anitatsai@gmail.com
           </Text>
-          
-          
         </CardContent>
-        {/* <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions> */}
-      </Card>
-    </CardWrapper>
+        </Card>
+      </CardWrapper>
 
-    <ListWrapper>
-      <Paper>
-        <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody> 
-              {/* here */}
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                return (
-                  <Row row={row}/>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </ListWrapper>
-    
-    { formOpen
-        ? <SubmitBlackList
-          handleClose={handleClose}
-          descriptionElementRef={descriptionElementRef}
-        /> : null
+      <ListWrapper>
+        <Paper>
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody> 
+                {/* here */}
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  return (
+                    <Row row={row}/>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </ListWrapper>
+      
+      { formOpen
+          ? <SubmitBlackList
+            handleClose={handleClose}
+            descriptionElementRef={descriptionElementRef}
+            onSubmit={() => fn()}
+          /> : null
       }
         
 
